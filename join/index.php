@@ -24,10 +24,25 @@ if (!empty($_POST)) {
 		// 変数['password属性']で変数を持てる
 		$error['password'] = 'blank';
 	}
+
+	$fileName = $_FILES['image']['name'];
+	if (!empty($fileName)) {
+		// アップロードされたファイルの後ろ三文字＝拡張子を確認する
+		$ext = substr($fileName, -3);
+		if ($ext != 'jpg' && $ext != 'gif' && $ext != 'png') {
+			$error['image'] = 'type';
+		}
+	}
+
 	// $errorがエラーなしだった場合
 	if (empty($error)) {
+		// $imageにファイル名を指定する $_FILE→input type="file"から得られる情報
+		$image = date('YmdHis') . $_FILES['image']['name'];
+		// $_FILES['tmp_name']現在のディレクトリ
+		move_uploaded_file($_FILES['image']['tmp_name'], '../member_picture/' . $image);
 		// $_SESSION['join']に連想配列$_POSTを代入
 		$_SESSION['join'] = $_POST;
+		$_SESSION['join']['image'] = $image;
 		header('Location: check.php');
 		exit();
 	}
@@ -92,6 +107,12 @@ if ($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])) {
 					<dt>写真など</dt>
 					<dd>
 						<input type="file" name="image" size="35" value="test" />
+						<?php if ($error['image'] === 'type') : ?>
+							<p class="error">*画像を入力してください</p>
+						<?php endif ?>
+						<?php if (!empty($error)): ?>
+							<p class="error">*恐れ入りますが、画像を改めて指定してください</p>
+						<?php endif ?>
 					</dd>
 				</dl>
 				<div><input type="submit" value="入力内容を確認する" /></div>
