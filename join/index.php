@@ -15,7 +15,7 @@ if (!empty($_POST)) {
 		$error['email'] = 'blank';
 	}
 
-	// // strlenは文字数チェック
+	// strlenは文字数チェック
 	// if (strlen($_POST['password'] < 4)) {
 	// 	// 変数['password属性']で変数を持てる
 	// 	$error['password'] = 'length';
